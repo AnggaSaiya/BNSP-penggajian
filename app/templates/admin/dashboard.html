@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Dashboard Admin</h2>
+<p class="text-muted">Kelola data dan proses penggajian.</p>
+<div class="row g-3 mb-4">
+  <div class="col-md-4"><div class="card card-stat p-3"><small>Pegawai</small><h2>{{ employees }}</h2></div></div>
+  <div class="col-md-4"><div class="card card-stat p-3"><small>Jabatan</small><h2>{{ positions }}</h2></div></div>
+  <div class="col-md-4"><div class="card card-stat p-3"><small>Total Payroll</small><h2>{{ payrolls }}</h2></div></div>
+</div>
+<div class="card table-card p-3">
+<h5>Ringkasan Payroll</h5>
+<table class="table">
+<tr><th>Periode</th><th>Status</th><th>Jumlah</th><th>Total Gaji Bersih</th></tr>
+{% for s in summaries %}
+<tr><td>{{ s.period }}</td><td>{{ s.status }}</td><td>{{ s.total_payroll }}</td><td>Rp {{ "{:,.0f}".format(s.total_net_salary or 0) }}</td></tr>
+{% else %}<tr><td colspan="4">Belum ada data.</td></tr>{% endfor %}
+</table>
+</div>
+{% endblock %}

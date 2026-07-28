@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{% if employee %}Edit Pegawai{% else %}Tambah Pegawai{% endif %}</h2>
+<form method="post" class="card p-4">
+<div class="row">
+<div class="col-md-6 mb-3">
+  <label>Kode Pegawai</label>
+  <input name="employee_code" class="form-control" value="{{ employee.employee_code if employee else '' }}" {% if employee %}readonly{% else %}required{% endif %}>
+  {% if employee %}<div class="form-text text-muted">Kode pegawai tidak bisa diubah.</div>{% endif %}
+</div>
+<div class="col-md-6 mb-3">
+  <label>Nama Lengkap</label>
+  <input name="full_name" class="form-control" required value="{{ employee.full_name if employee else '' }}">
+</div>
+<div class="col-md-6 mb-3">
+  <label>Email</label>
+  <input type="email" name="email" class="form-control" required value="{{ employee.email if employee else '' }}">
+</div>
+<div class="col-md-6 mb-3">
+  <label>No. Telepon</label>
+  <input name="phone" class="form-control" value="{{ employee.phone if employee else '' }}">
+</div>
+<div class="col-md-6 mb-3">
+  <label>Jabatan</label>
+  <select name="position_id" class="form-select" required>
+    {% for p in positions %}
+    <option value="{{ p.id }}" {% if employee and employee.position_id == p.id %}selected{% endif %}>{{ p.name }} - Rp {{ "{:,.0f}".format(p.base_salary) }}</option>
+    {% endfor %}
+  </select>
+</div>
+<div class="col-md-6 mb-3">
+  <label>Tanggal Masuk</label>
+  <input type="date" name="join_date" class="form-control" value="{{ employee.join_date if employee else '' }}">
+</div>
+<div class="col-md-6 mb-3">
+  <label>Status</label>
+  <select name="status" class="form-select">
+    <option value="ACTIVE" {% if employee and employee.status == 'ACTIVE' %}selected{% endif %}>ACTIVE</option>
+    <option value="INACTIVE" {% if employee and employee.status == 'INACTIVE' %}selected{% endif %}>INACTIVE</option>
+  </select>
+</div>
+<div class="col-12 mb-3">
+  <label>Alamat</label>
+  <textarea name="address" class="form-control">{{ employee.address if employee else '' }}</textarea>
+</div>
+<div class="col-12 mt-2">
+<button class="btn btn-dark">{% if employee %}Simpan Perubahan{% else %}Simpan{% endif %}</button>
+<a href="{{ url_for('admin.employees') }}" class="btn btn-secondary">Batal</a>
+</div>
+</div>
+</form>
+{% endblock %}

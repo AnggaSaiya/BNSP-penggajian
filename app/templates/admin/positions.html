@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Jabatan & Gaji</h2>
+
+{% if edit_position %}
+<h4 class="mt-3">Edit Jabatan</h4>
+<form method="post" action="{{ url_for('admin.edit_position', id=edit_position.id) }}" class="card p-3 mb-4">
+<div class="row">
+<div class="col-md-3"><input name="name" class="form-control" value="{{ edit_position.name }}" required></div>
+<div class="col-md-3"><input type="number" name="base_salary" class="form-control" value="{{ edit_position.base_salary }}" required></div>
+<div class="col-md-4"><input name="description" class="form-control" value="{{ edit_position.description or '' }}" placeholder="Deskripsi"></div>
+    <div class="col-md-2"><button class="btn btn-warning w-100">Simpan</button></div>
+</div>
+</form>
+{% endif %}
+
+<form method="post" class="card p-3 mb-4">
+<div class="row">
+<div class="col-md-3"><input name="name" class="form-control" placeholder="Nama jabatan" required></div>
+<div class="col-md-3"><input type="number" name="base_salary" class="form-control" placeholder="Gaji pokok" required></div>
+<div class="col-md-4"><input name="description" class="form-control" placeholder="Deskripsi"></div>
+<div class="col-md-2"><button class="btn btn-dark w-100">Tambah</button></div>
+</div>
+</form>
+
+<div class="card p-3">
+<table class="table">
+<tr><th>Nama</th><th>Gaji Pokok</th><th>Deskripsi</th><th>Aksi</th></tr>
+{% for p in positions %}
+<tr>
+<td>{{ p.name }}</td>
+<td>Rp {{ "{:,.0f}".format(p.base_salary) }}</td>
+<td>{{ p.description or "-" }}</td>
+<td>
+  <a href="{{ url_for('admin.edit_position', id=p.id) }}" class="btn btn-sm btn-warning">Edit</a>
+  <form method="post" action="{{ url_for('admin.delete_position', id=p.id) }}" style="display:inline" onsubmit="return confirm('Yakin hapus jabatan {{ p.name }}?')">
+    <button class="btn btn-sm btn-danger">Hapus</button>
+  </form>
+</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+{% endblock %}

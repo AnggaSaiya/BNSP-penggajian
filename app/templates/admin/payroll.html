@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Proses Payroll</h2>
+
+{% if edit_payroll %}
+<h4 class="mt-3">Edit Payroll</h4>
+<div class="alert alert-info">Status: <strong>{{ edit_payroll.status }}</strong> (hanya manager yang dapat mengubah status)</div>
+<form method="post" action="{{ url_for('admin.edit_payroll', id=edit_payroll.id) }}" class="card p-3 mb-4">
+<div class="row">
+<div class="col-md-3 mb-2"><label>Gaji Pokok</label><input type="number" name="base_salary" class="form-control" value="{{ edit_payroll.base_salary }}" step="0.01"></div>
+<div class="col-md-3 mb-2"><label>Tunjangan</label><input type="number" name="allowance" class="form-control" value="{{ edit_payroll.allowance }}" step="0.01"></div>
+<div class="col-md-3 mb-2"><label>Lembur</label><input type="number" name="overtime" class="form-control" value="{{ edit_payroll.overtime }}" step="0.01"></div>
+<div class="col-md-3 mb-2"><label>Bonus</label><input type="number" name="bonus" class="form-control" value="{{ edit_payroll.bonus }}" step="0.01"></div>
+<div class="col-md-3 mb-2"><label>Pot. Tetap</label><input type="number" name="fixed_deduction" class="form-control" value="{{ edit_payroll.fixed_deduction }}" step="0.01"></div>
+<div class="col-md-3 mb-2"><label>BPJS</label><input type="number" name="bpjs" class="form-control" value="{{ edit_payroll.bpjs }}" step="0.01"></div>
+<div class="col-md-3 mb-2"><label>Pajak</label><input type="number" name="tax" class="form-control" value="{{ edit_payroll.tax }}" step="0.01"></div>
+<div class="col-md-3 mb-2"><label>Gross</label><input type="number" name="gross_salary" class="form-control" value="{{ edit_payroll.gross_salary }}" step="0.01"></div>
+<div class="col-md-3 mb-2"><label>Total Pot.</label><input type="number" name="total_deduction" class="form-control" value="{{ edit_payroll.total_deduction }}" step="0.01"></div>
+<div class="col-md-3 mb-2"><label>Net</label><input type="number" name="net_salary" class="form-control" value="{{ edit_payroll.net_salary }}" step="0.01"></div>
+    <div class="col-md-3 mb-2"><label>Catatan</label><input name="notes" class="form-control" value="{{ edit_payroll.notes or '' }}"></div>
+<div class="col-12 mt-2">
+<button class="btn btn-warning">Simpan Perubahan</button>
+<a href="{{ url_for('admin.payroll') }}" class="btn btn-secondary">Batal</a>
+</div>
+</div>
+</form>
+{% endif %}
+
+<form method="post" class="card p-3 mb-4">
+<div class="row">
+<div class="col-md-3">
+  <select name="employee_id" class="form-select" required>
+    <option value="">Pilih Pegawai</option>
+    {% for e in employees %}
+    <option value="{{ e.id }}">{{ e.employee_code }} - {{ e.full_name }}</option>
+    {% endfor %}
+  </select>
+</div>
+<div class="col-md-3"><input type="month" name="period" class="form-control" required></div>
+<div class="col-md-3"><input type="number" name="bonus" class="form-control" value="0" placeholder="Bonus"></div>
+<div class="col-md-3"><button class="btn btn-dark w-100">Buat Payroll DRAFT</button></div>
+</div>
+</form>
+
+<div class="card p-3">
+<table class="table table-hover">
+<tr><th>Periode</th><th>Pegawai</th><th>Gross</th><th>Potongan</th><th>Net</th><th>Status</th><th>Aksi</th></tr>
+{% for r in rows %}
+<tr>
+<td>{{ r.period }}</td>
+<td>{{ r.employee.employee_code }} - {{ r.employee.full_name }}</td>
+<td>Rp {{ "{:,.0f}".format(r.gross_salary) }}</td>
+<td>Rp {{ "{:,.0f}".format(r.total_deduction) }}</td>
+<td>Rp {{ "{:,.0f}".format(r.net_salary) }}</td>
+<td>{{ r.status }}</td>
+<td>
+  <a href="{{ url_for('admin.edit_payroll', id=r.id) }}" class="btn btn-sm btn-warning">Edit</a>
+  <form method="post" action="{{ url_for('admin.delete_payroll', id=r.id) }}" style="display:inline" onsubmit="return confirm('Yakin hapus payroll {{ r.employee.full_name }} periode {{ r.period }}?')">
+    <button class="btn btn-sm btn-danger">Hapus</button>
+  </form>
+</td>
+</tr>
+{% else %}<tr><td colspan="7">Belum ada payroll.</td></tr>{% endfor %}
+</table>
+</div>
+{% endblock %}

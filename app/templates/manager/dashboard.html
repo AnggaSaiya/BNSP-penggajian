@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Review Payroll</h2>
+<p class="text-muted">Periksa hasil perhitungan sebelum diterbitkan sebagai slip gaji.</p>
+<div class="card p-3"><table class="table table-hover">
+<tr><th>Periode</th><th>Pegawai</th><th>Gross</th><th>Potongan</th><th>Net</th><th>Status</th><th>Aksi</th></tr>
+{% for p in rows %}
+<tr>
+<td>{{ p.period }}</td><td>{{ p.employee.full_name }}</td>
+<td>Rp {{ "{:,.0f}".format(p.gross_salary) }}</td>
+<td>Rp {{ "{:,.0f}".format(p.total_deduction) }}</td>
+<td>Rp {{ "{:,.0f}".format(p.net_salary) }}</td>
+<td>{{ p.status }}</td>
+<td>
+{% if p.status == "DRAFT" %}
+<form method="post" action="{{ url_for('manager.approve', payroll_id=p.id) }}" class="d-inline"><button class="btn btn-sm btn-success">Approve</button></form>
+<form method="post" action="{{ url_for('manager.reject', payroll_id=p.id) }}" class="d-inline"><input type="hidden" name="notes" value="Mohon periksa kembali data payroll."><button class="btn btn-sm btn-outline-danger">Reject</button></form>
+{% else %}-{% endif %}
+</td>
+</tr>
+{% else %}<tr><td colspan="7">Belum ada payroll.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

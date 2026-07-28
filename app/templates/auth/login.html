@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Login - Payroll System{% endblock %}
+{% block public_content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <h3 class="mb-1">Payroll System</h3>
+          <p class="text-muted mb-4">Silakan login untuk melanjutkan.</p>
+          <form method="post">
+            <div class="mb-3"><label class="form-label">Username</label><input name="username" class="form-control" required></div>
+            <div class="mb-3"><label class="form-label">Password</label><input type="password" name="password" class="form-control" required></div>
+          <button class="btn btn-dark w-100">Login</button>
+          </form>
+          <hr>
+          <div class="small text-muted text-center">
+            Demo: admin/admin123 · manager/manager123
+          </div>
+      </div>
+  </div>
+
+<!-- Modal Popup for Errors -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="modal fade" id="errorModal" tabindex="-1" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-{{ 'danger' if category == 'danger' else 'warning' }}">
+      <div class="modal-header bg-{{ 'danger' if category == 'danger' else 'warning' }} text-white">
+        <h5 class="modal-title">
+          {% if category == 'danger' %}
+            &#9888; Login Gagal
+          {% else %}
+            &#8505; Info
+          {% endif %}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center py-4">
+        <p class="mb-0" style="font-size:1.1rem">{{ message }}</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button class="btn btn-{{ 'danger' if category == 'danger' else 'warning' }}" data-bs-dismiss="modal">Tutup</button>
+      </div>
+  </div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  var modal = document.getElementById("errorModal");
+  if (modal) {
+    var bootstrapModal = new bootstrap.Modal(modal);
+    bootstrapModal.show();
+  }
+});
+</script>
+{% endblock %}

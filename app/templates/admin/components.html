@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Tunjangan & Potongan</h2>
+
+{% if edit_component %}
+<h4 class="mt-3">Edit Komponen</h4>
+<form method="post" action="{{ url_for('admin.edit_component', id=edit_component.id) }}" class="card p-3 mb-4">
+<div class="row">
+<div class="col-md-3"><input name="name" class="form-control" value="{{ edit_component.name }}" required></div>
+<div class="col-md-2"><select name="component_type" class="form-select"><option value="ALLOWANCE" {% if edit_component.component_type == 'ALLOWANCE' %}selected{% endif %}>Tunjangan</option><option value="DEDUCTION" {% if edit_component.component_type == 'DEDUCTION' %}selected{% endif %}>Potongan</option></select></div>
+<div class="col-md-2"><input type="number" name="default_amount" class="form-control" value="{{ edit_component.default_amount }}" required></div>
+<div class="col-md-3"><input name="description" class="form-control" value="{{ edit_component.description or '' }}" placeholder="Deskripsi"></div>
+<div class="col-md-2"><button class="btn btn-warning w-100">Simpan</button></div>
+</div>
+</form>
+{% endif %}
+
+<form method="post" class="card p-3 mb-4">
+<div class="row">
+<div class="col-md-3"><input name="name" class="form-control" placeholder="Nama komponen" required></div>
+<div class="col-md-2"><select name="component_type" class="form-select"><option value="ALLOWANCE">Tunjangan</option><option value="DEDUCTION">Potongan</option></select></div>
+<div class="col-md-2"><input type="number" name="default_amount" class="form-control" placeholder="Nominal" required></div>
+<div class="col-md-3"><input name="description" class="form-control" placeholder="Deskripsi"></div>
+<div class="col-md-2"><button class="btn btn-dark w-100">Tambah</button></div>
+</div>
+</form>
+
+<div class="card p-3">
+<table class="table">
+<tr><th>Nama</th><th>Jenis</th><th>Nominal</th><th>Deskripsi</th><th>Aksi</th></tr>
+{% for c in components %}
+<tr>
+<td>{{ c.name }}</td>
+<td>{{ c.component_type }}</td>
+<td>Rp {{ "{:,.0f}".format(c.default_amount) }}</td>
+<td>{{ c.description or "-" }}</td>
+<td>
+  <a href="{{ url_for('admin.edit_component', id=c.id) }}" class="btn btn-sm btn-warning">Edit</a>
+  <form method="post" action="{{ url_for('admin.delete_component', id=c.id) }}" style="display:inline" onsubmit="return confirm('Yakin hapus komponen {{ c.name }}?')">
+    <button class="btn btn-sm btn-danger">Hapus</button>
+  </form>
+</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+{% endblock %}
