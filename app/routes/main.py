@@ -9,5 +9,7 @@ main_bp = Blueprint("main", __name__)
 def dashboard():
     if current_user.role == "admin":
         return redirect(url_for("admin.dashboard"))
-    # Manager role diarahkan ke manager dashboard
-    return redirect(url_for("manager.dashboard"))
+    if current_user.role == "manager":
+        return redirect(url_for("manager.dashboard"))
+    # Karyawan/employee role diarahkan ke karyawan dashboard (slip gaji)
+    return redirect(url_for("karyawan.dashboard"))

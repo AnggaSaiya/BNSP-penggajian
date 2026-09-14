@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Slip Gaji Saya</h2>
+<p class="text-muted">Lihat dan unduh slip gaji yang sudah disetujui.</p>
+
+{% if employee %}
+<div class="card p-3 mb-3">
+  <div class="row">
+    <div class="col-md-3"><strong>Kode Pegawai:</strong> {{ employee.employee_code }}</div>
+    <div class="col-md-3"><strong>Nama:</strong> {{ employee.full_name }}</div>
+    <div class="col-md-3"><strong>Jabatan:</strong> {{ employee.position.name }}</div>
+    <div class="col-md-3"><strong>Status:</strong> {{ employee.status }}</div>
+</div>
+{% endif %}
+
+<div class="card p-3">
+<table class="table table-hover">
+<tr>
+  <th>Periode</th>
+  <th>Gaji Pokok</th>
+  <th>Tunjangan</th>
+  <th>Lembur</th>
+  <th>Bonus</th>
+  <th>Gross</th>
+  <th>Potongan</th>
+  <th>Net</th>
+  <th>Aksi</th>
+</tr>
+{% for r in rows %}
+<tr>
+  <td>{{ r.period }}</td>
+  <td>Rp {{ "{:,.0f}".format(r.base_salary) }}</td>
+  <td>Rp {{ "{:,.0f}".format(r.allowance) }}</td>
+  <td>Rp {{ "{:,.0f}".format(r.overtime) }}</td>
+  <td>Rp {{ "{:,.0f}".format(r.bonus) }}</td>
+  <td>Rp {{ "{:,.0f}".format(r.gross_salary) }}</td>
+  <td>Rp {{ "{:,.0f}".format(r.total_deduction) }}</td>
+  <td><strong>Rp {{ "{:,.0f}".format(r.net_salary) }}</strong></td>
+  <td>
+    <a href="{{ url_for('karyawan.slip_gaji', payroll_id=r.id) }}" class="btn btn-sm btn-info" target="_blank">Lihat</a>
+    <a href="{{ url_for('karyawan.download_slip', payroll_id=r.id) }}" class="btn btn-sm btn-dark">Download</a>
+  </td>
+</tr>
+{% else %}
+<tr><td colspan="9" class="text-center text-muted py-4">
+  Belum ada slip gaji yang tersedia. Slip gaji akan muncul setelah payroll di-<strong>Approve</strong> oleh Manager.
+</td></tr>
+{% endfor %}
+</table>
+</div>
+{% endblock %}

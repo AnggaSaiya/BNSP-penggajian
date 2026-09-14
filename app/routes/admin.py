@@ -72,7 +72,7 @@ def new_employee():
                 flash(f"Kode pegawai '{employee_code}' sudah digunakan.", "danger")
                 return render_template("admin/employee_form.html", positions=positions, employee=None)
 
-            user = User(username=employee_code, role="employee")
+            user = User(username=employee_code, role="karyawan")
             user.set_password(password_default)
             db.session.add(user)
             db.session.flush()
@@ -136,11 +136,11 @@ def delete_employee(id):
     if not employee:
         abort(404)
     try:
-        # Hapus juga User terkait jika ada (hanya jika role-nya employee)
-        if employee.user and employee.user.role == "employee":
+        # Hapus User jika role-nya karyawan (bukan manager/admin)
+        if employee.user and employee.user.role == "karyawan":
             db.session.delete(employee.user)
         elif employee.user:
-            # Unlink manager user (jangan hapus karena akun manager self-register)
+            # Unlink manager/admin user (jangan dihapus)
             employee.user_id = None
             employee.user.employee = None
         db.session.delete(employee)

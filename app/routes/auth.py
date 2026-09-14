@@ -20,9 +20,9 @@ def login():
         ).first()
 
         if user and user.check_password(password):
-            # Hanya admin dan manager yang boleh login (employee tidak punya akses login)
-            if user.role == "employee":
-                flash("Akun pegawai tidak memiliki akses login.", "danger")
+            # Hanya admin, manager, karyawan, dan employee yang boleh login
+            if user.role not in ("admin", "manager", "karyawan", "employee"):
+                flash("Akun ini tidak memiliki akses login.", "danger")
                 return render_template("auth/login.html")
             login_user(user)
             return redirect(url_for("main.dashboard"))
